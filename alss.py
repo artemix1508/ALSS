@@ -53,9 +53,32 @@ def get_package_manager(distro_info):
     }
     return package_managers.get(distro_name, "Unknown package manager")
 
+needed_packages = {
+    "pacman": ["neovim", "git", "curl", "base-devel", "ripgrep", "fd", "wget", "htop"],
+    "apt": ["neovim", "git", "curl", "build-essential", "ripgrep", "fd-find", "wget", "htop"],
+    "dnf": ["neovim", "git", "curl", "ripgrep", "fd-find", "wget", "htop"],
+}
+
+to_install = []
+
 distro_info = get_distro_info()
+
 package_manager = get_package_manager(distro_info)
+
 gpu_info = get_gpu_info()
+
+print(f"Detected package manager: {package_manager}")
+print("----------------------------------------")
+
 for i, gpu in enumerate(gpu_info, start=1):
     print(f"GPU{i}: {gpu['Vendor']}, {gpu['Model']}")
-print(f"Detected package manager: {package_manager}")
+    print("----------------------------------------")
+
+for package in needed_packages.get(package_manager, []):
+    check = subprocess.run([package_manager, "-Q", package])
+    if check.returncode != 0:
+        to_install.append(package)
+
+if to_install:
+    print(f"Installing: {to_install}")
+    subprocess.run(["sudo", package_manager, "-S"] + to_install)
