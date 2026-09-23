@@ -10,11 +10,14 @@ def get_gpu_info():
     for line in output.splitlines():
         if "VGA" in line:
             if "NVIDIA" in line:
-                gpus.append("NVIDIA")
+                model = line.split('[')[-1].split(']')[0]
+                gpus.append({'Vendor': 'NVIDIA', 'Model': model})
             elif "AMD" in line:
-                gpus.append("AMD")
+                model = line.split('[')[-1].split(']')[0]
+                gpus.append({'Vendor': 'AMD', 'Model': model})
             elif "Intel" in line:
-                gpus.append("Intel")
+                model = line.split('[')[-1].split(']')[0]
+                gpus.append({'Vendor': 'Intel', 'Model': model})
             pass
     return gpus
 
@@ -53,5 +56,6 @@ def get_package_manager(distro_info):
 distro_info = get_distro_info()
 package_manager = get_package_manager(distro_info)
 gpu_info = get_gpu_info()
+for i, gpu in enumerate(gpu_info, start=1):
+    print(f"GPU{i}: {gpu['Vendor']}, {gpu['Model']}")
 print(f"Detected package manager: {package_manager}")
-print(f"Detected GPU's: {gpu_info}")
