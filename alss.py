@@ -53,11 +53,35 @@ def get_package_manager(distro_info):
     }
     return package_managers.get(distro_name, "Unknown package manager")
 
+pm_commands = {
+    "pacman": {"query": ["pacman", "-Q"], "install": ["sudo", "pacman", "-S"]},
+    "apt": {"query": ["dpkg", "-s"], "install": ["sudo", "apt", "install", "-y"]},
+    "dnf": {"query": ["rpm", "-q"], "install": ["sudo", "dnf", "install", "-y"]},
+}
+
 needed_packages = {
     "pacman": ["neovim", "git", "curl", "base-devel", "ripgrep", "fd", "wget", "htop"],
     "apt": ["neovim", "git", "curl", "build-essential", "ripgrep", "fd-find", "wget", "htop"],
     "dnf": ["neovim", "git", "curl", "ripgrep", "fd-find", "wget", "htop"],
 }
+
+gpu_drivers = {
+    "NVIDIA": {"pacman": "nvidia", "dnf": "akmod-nvidia"},
+    "AMD": {"pacman": "vulkan-radeon", "apt": "mesa-vulkan-drivers", "dnf": "mesa-vulkan-drivers"},
+    "Intel": {"pacman": "vulkan-intel", "apt": "mesa-vulkan-drivers", "dnf": "mesa-vulkan-drivers"},
+}
+
+def get_recommended_nvidia_driver():
+    result_recommended = subprocess.run(["ubuntu-drivers", "devices"], capture_output=True, text=True)
+    output_recommended = result_recommended.stdout
+    
+    recommended_nvidia_driver = []
+
+    for line in output_recommended.splitlines():
+        if "recommended" in line:
+            driver = line.split(":")[1].split()[0]
+            recommended_nvidia_driver.append(driver)
+
 
 to_install = []
 
@@ -75,10 +99,27 @@ for i, gpu in enumerate(gpu_info, start=1):
     print("----------------------------------------")
 
 for package in needed_packages.get(package_manager, []):
-    check = subprocess.run([package_manager, "-Q", package])
+    command = pm_commands.get(package_manager, {}).get("query", []) + [package]
+    check = subprocess.run(command)
     if check.returncode != 0:
         to_install.append(package)
 
+for gpu in gpu_info:
+    vendor = gpu['Vendor']
+    driver = gpu_drivers.get(vendor, {}).get(package_manager, None)
+    
+    if driver:
+        if vendor == "NVIDIA" and package_manager == "apt":
+            recommended = get_recommended_nvidia_driver()
+            if recommended:
+                driver = recommended
+        driver_command = pm_commands.get(package_manager, {}).get("query", []) + [driver]
+        check_driver = subprocess.run(driver_command)
+        if check_driver.returncode != 0:
+            to_install.append(driver)
+
 if to_install:
     print(f"Installing: {to_install}")
-    subprocess.run(["sudo", package_manager, "-S"] + to_install)
+    subprocess.run(pm_commands.get(package_manager, {}).get("install", []) + to_install)
+
+
