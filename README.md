@@ -27,3 +27,6 @@ Edit `config.json` to change which packages, GPU drivers, or package manager com
 
 # Compiling
 If you want to, you can compile it using [PyInstaller](https://pyinstaller.org/en/stable/) or something different.
+
+# Supported Distributions/Package Managers
+You can edit the config.json to match your pm or distro, the possibilities are endless!
