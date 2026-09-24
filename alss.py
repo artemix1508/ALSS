@@ -1,5 +1,6 @@
 import os
 import subprocess
+import json
 
 def get_gpu_info():
     result = subprocess.run(["lspci"], capture_output=True, text=True)
@@ -59,11 +60,12 @@ pm_commands = {
     "dnf": {"query": ["rpm", "-q"], "install": ["sudo", "dnf", "install", "-y"]},
 }
 
-needed_packages = {
-    "pacman": ["neovim", "git", "curl", "base-devel", "ripgrep", "fd", "wget", "htop"],
-    "apt": ["neovim", "git", "curl", "build-essential", "ripgrep", "fd-find", "wget", "htop"],
-    "dnf": ["neovim", "git", "curl", "ripgrep", "fd-find", "wget", "htop"],
-}
+with open("config.json") as f:
+    config = json.load(f)
+
+needed_packages = config["needed_packages"]
+gpu_drivers = config["gpu_drivers"]
+pm_commands = config["pm_commands"]
 
 gpu_drivers = {
     "NVIDIA": {"pacman": "nvidia", "dnf": "akmod-nvidia"},
@@ -121,5 +123,3 @@ for gpu in gpu_info:
 if to_install:
     print(f"Installing: {to_install}")
     subprocess.run(pm_commands.get(package_manager, {}).get("install", []) + to_install)
-
-

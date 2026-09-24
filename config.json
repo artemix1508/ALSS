@@ -1,0 +1,17 @@
+{
+  "needed_packages": {
+    "pacman": ["neovim", "git", "curl", "base-devel", "ripgrep", "fd", "wget", "htop"],
+    "apt": ["neovim", "git", "curl", "build-essential", "ripgrep", "fd-find", "wget", "htop"],
+    "dnf": ["neovim", "git", "curl", "ripgrep", "fd-find", "wget", "htop"]
+  },
+  "gpu_drivers": {
+    "NVIDIA": {"pacman": "nvidia", "apt": "nvidia-driver-535", "dnf": "akmod-nvidia"},
+    "AMD": {"pacman": "vulkan-radeon", "apt": "mesa-vulkan-drivers", "dnf": "mesa-vulkan-drivers"},
+    "Intel": {"pacman": "vulkan-intel", "apt": "mesa-vulkan-drivers", "dnf": "mesa-vulkan-drivers"}
+  },
+  "pm_commands": {
+    "pacman": {"query": ["pacman", "-Q"], "install": ["sudo", "pacman", "-S"]},
+    "apt": {"query": ["dpkg", "-s"], "install": ["sudo", "apt", "install", "-y"]},
+    "dnf": {"query": ["rpm", "-q"], "install": ["sudo", "dnf", "install", "-y"]}
+  }
+}
