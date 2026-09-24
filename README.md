@@ -26,7 +26,8 @@ python alss.py --dry-run
 Edit `config.json` to change which packages, GPU drivers, or package manager commands the script uses. No need to touch the Python code.
 
 # Compiling
-If you want to, you can compile it using [PyInstaller](https://pyinstaller.org/en/stable/) or something different.
+If you want to, you can compile it using [PyInstaller](https://pyinstaller.org/en/stable/) with
+```pyinstaller --onefile --add-data "config.json:." alss.py```
 
 # Supported Distributions/Package Managers
 You can edit the config.json to match your pm or distro, the possibilities are endless!
