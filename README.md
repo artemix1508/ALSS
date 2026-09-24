@@ -1,5 +1,5 @@
 # Artemix-Linux-Setup-Script [WIP]
-This setup script is desinged to help you install the essentials for your hardware and distribution
+This easily customizable setup script is desinged to help you install the essentials for your hardware and distribution
 
 # Dependencies:
 ```ubuntu-drivers-common``` - only needed on linux mint/ubuntu
