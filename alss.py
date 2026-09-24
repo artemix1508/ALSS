@@ -54,24 +54,12 @@ def get_package_manager(distro_info):
     }
     return package_managers.get(distro_name, "Unknown package manager")
 
-pm_commands = {
-    "pacman": {"query": ["pacman", "-Q"], "install": ["sudo", "pacman", "-S"]},
-    "apt": {"query": ["dpkg", "-s"], "install": ["sudo", "apt", "install", "-y"]},
-    "dnf": {"query": ["rpm", "-q"], "install": ["sudo", "dnf", "install", "-y"]},
-}
-
 with open("config.json") as f:
     config = json.load(f)
 
 needed_packages = config["needed_packages"]
 gpu_drivers = config["gpu_drivers"]
 pm_commands = config["pm_commands"]
-
-gpu_drivers = {
-    "NVIDIA": {"pacman": "nvidia", "dnf": "akmod-nvidia"},
-    "AMD": {"pacman": "vulkan-radeon", "apt": "mesa-vulkan-drivers", "dnf": "mesa-vulkan-drivers"},
-    "Intel": {"pacman": "vulkan-intel", "apt": "mesa-vulkan-drivers", "dnf": "mesa-vulkan-drivers"},
-}
 
 def get_recommended_nvidia_driver():
     result_recommended = subprocess.run(["ubuntu-drivers", "devices"], capture_output=True, text=True)
