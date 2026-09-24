@@ -49,7 +49,7 @@ def get_package_manager(distro_info):
     package_managers = {
         "Ubuntu": "apt",
         "Debian": "apt",
-        "Fedora": "dnf",
+        "Fedora Linux": "dnf",
         "CentOS": "yum",
         "Arch Linux": "pacman",
         "openSUSE": "zypper",
