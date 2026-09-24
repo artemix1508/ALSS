@@ -44,18 +44,16 @@ def get_package_manager(distro_info):
     if not distro_info:
         return "Unknown distribution"
 
-    distro_name = distro_info.get('NAME', '').strip('"')
+    distro_name = distro_info.get('ID', '').strip('"')
     
     package_managers = {
-        "Ubuntu": "apt",
-        "Debian": "apt",
-        "Fedora Linux": "dnf",
-        "CentOS": "yum",
-        "Arch Linux": "pacman",
-        "openSUSE": "zypper",
-        "Linux Mint": "apt",
-        "Omarchy": "pacman",
-        "CachyOS": "pacman"
+        "ubuntu": "apt",
+        "debian": "apt",
+        "fedora": "dnf",
+        "arch": "pacman",
+        "linuxmint": "apt",
+        "omarchy": "pacman",
+        "cachyos": "pacman"
     }
     return package_managers.get(distro_name, "Unknown package manager")
 
