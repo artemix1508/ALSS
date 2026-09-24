@@ -1,4 +1,4 @@
-# Artemix-Linux-Setup-Script [WIP]
+# Artemix-Linux-Setup-Script
 This easily customizable setup script is designed to help you install the essentials for your hardware and distribution.
 
 # Dependencies:
