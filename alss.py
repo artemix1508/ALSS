@@ -5,6 +5,8 @@ import sys
 
 dry_run = "--dry-run" in sys.argv
 
+#-----Start of the functions zone-----
+
 def get_gpu_info():
     result = subprocess.run(["lspci"], capture_output=True, text=True)
     output = result.stdout
@@ -57,13 +59,6 @@ def get_package_manager(distro_info):
     }
     return package_managers.get(distro_name, "Unknown package manager")
 
-with open("config.json") as f:
-    config = json.load(f)
-
-needed_packages = config["needed_packages"]
-gpu_drivers = config["gpu_drivers"]
-pm_commands = config["pm_commands"]
-
 def get_recommended_nvidia_driver():
     result_recommended = subprocess.run(["ubuntu-drivers", "devices"], capture_output=True, text=True)
     output_recommended = result_recommended.stdout
@@ -74,6 +69,21 @@ def get_recommended_nvidia_driver():
             return driver
     return None
 
+#-----End of the functions zone-----
+
+#-----Main logic-----
+
+if getattr(sys, '_MEIPASS', None):
+    config_path = os.path.join(sys._MEIPASS, "config.json")
+else:
+    config_path = "config.json"
+
+with open(config_path) as f:
+    config = json.load(f)
+
+needed_packages = config["needed_packages"]
+gpu_drivers = config["gpu_drivers"]
+pm_commands = config["pm_commands"]
 
 to_install = []
 
