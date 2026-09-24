@@ -1,6 +1,9 @@
 import os
 import subprocess
 import json
+import sys
+
+dry_run = "--dry-run" in sys.argv
 
 def get_gpu_info():
     result = subprocess.run(["lspci"], capture_output=True, text=True)
@@ -64,13 +67,12 @@ pm_commands = config["pm_commands"]
 def get_recommended_nvidia_driver():
     result_recommended = subprocess.run(["ubuntu-drivers", "devices"], capture_output=True, text=True)
     output_recommended = result_recommended.stdout
-    
-    recommended_nvidia_driver = []
 
     for line in output_recommended.splitlines():
         if "recommended" in line:
             driver = line.split(":")[1].split()[0]
-            recommended_nvidia_driver.append(driver)
+            return driver
+    return None
 
 
 to_install = []
@@ -109,5 +111,8 @@ for gpu in gpu_info:
             to_install.append(driver)
 
 if to_install:
-    print(f"Installing: {to_install}")
-    subprocess.run(pm_commands.get(package_manager, {}).get("install", []) + to_install)
+    if dry_run:
+        print(f"Will install: {to_install}")
+    else:
+        print(f"Installing: {to_install}")
+        subprocess.run(pm_commands.get(package_manager, {}).get("install", []) + to_install)
