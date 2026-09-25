@@ -53,7 +53,11 @@ def get_package_manager(distro_info):
         "arch": "pacman",
         "linuxmint": "apt",
         "omarchy": "pacman",
-        "cachyos": "pacman"
+        "cachyos": "pacman",
+        "centos": "dnf",
+        "manjaro": "pacman",
+        "gentoo": "emerge"
+        "void": "xbps",
     }
     return package_managers.get(distro_name, "Unknown package manager")
 
