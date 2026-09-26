@@ -44,8 +44,6 @@ def get_package_manager(distro_info):
     if not distro_info:
         return "Unknown distribution"
 
-    distro_name = distro_info.get('ID', '').strip('"')
-    
     package_managers = {
         "ubuntu": "apt",
         "debian": "apt",
@@ -54,12 +52,24 @@ def get_package_manager(distro_info):
         "linuxmint": "apt",
         "omarchy": "pacman",
         "cachyos": "pacman",
-        "centos": "dnf",
+        "centos": "yum",
         "manjaro": "pacman",
-        "gentoo": "emerge"
+        "gentoo": "emerge",
         "void": "xbps",
     }
-    return package_managers.get(distro_name, "Unknown package manager")
+    
+    distro_name = distro_info.get('ID', '').strip('"')
+
+    if distro_name in package_managers:
+        return package_managers[distro_name]
+
+    id_like = distro_info.get('ID_LIKE', '').strip('"')
+
+    for candidate in id_like.split():
+        if candidate in package_managers:
+            return package_managers[candidate]
+
+    return "Unknown package manager"
 
 def get_recommended_nvidia_driver():
     result_recommended = subprocess.run(["ubuntu-drivers", "devices"], capture_output=True, text=True)
